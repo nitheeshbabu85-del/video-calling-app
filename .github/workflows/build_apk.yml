@@ -24,17 +24,20 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install dependencies
+      - name: Install dependencies and Build APK
         run: |
-          TARGET_DIR=$(find . -maxdepth 2 -name "pubspec.yaml" -exec dirname {} \;)
-          echo "Found project in $TARGET_DIR"
-          cd $TARGET_DIR
-          flutter pub get
+          PUBSPEC_PATH=$(find . -name "pubspec.yaml" -not -path "*/.*" | head -n 1)
+          
+          if [ -z "$PUBSPEC_PATH" ]; then
+            echo "pubspec.yaml not found!"
+            exit 1
+          fi
 
-      - name: Build APK
-        run: |
-          TARGET_DIR=$(find . -maxdepth 2 -name "pubspec.yaml" -exec dirname {} \;)
-          cd $TARGET_DIR
+          PROJECT_DIR=$(dirname "$PUBSPEC_PATH")
+          echo "Project directory found at: $PROJECT_DIR"
+          
+          cd "$PROJECT_DIR"
+          flutter pub get
           flutter build apk --release
 
       - name: Upload APK
