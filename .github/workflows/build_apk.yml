@@ -25,15 +25,11 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        defaults:
-          run:
-            working-directory: video-calling-app-main
+        working-directory: video-calling-app-main
         run: flutter pub get
 
       - name: Build APK
-        defaults:
-          run:
-            working-directory: video-calling-app-main
+        working-directory: video-calling-app-main
         run: flutter build apk --release
 
       - name: Upload APK
